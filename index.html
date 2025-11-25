@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LIVING 司儀講稿 (多人版)</title>
+    <style>
+        /* 基礎設定 */
+        body { 
+            font-family: "Microsoft JhengHei", "Heiti TC", sans-serif; 
+            background-color: #f8f9fa; 
+            margin: 0; 
+            padding: 20px; 
+            color: #333;
+            padding-top: 60px; /* 留位給頂部按鈕 */
+        }
+
+        /* 頂部浮動按鈕列 */
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            box-sizing: border-box;
+        }
+        .top-bar h1 { margin: 0; font-size: 18px; color: #007bff; }
+        .toggle-btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        /* 設定面板 (預設顯示) */
+        #controlPanel {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+            border: 1px solid #eee;
+            display: block; 
+        }
+        
+        /* 隱藏時的樣式 */
+        .hidden { display: none !important; }
+
+        /* 按鈕群組 */
+        h3 { margin-top: 0; border-bottom: 2px solid #f0f0f0; padding-bottom: 5px; font-size: 16px; color: #555; }
+        .btn-group { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px; }
+        
+        .option-btn { 
+            padding: 8px 12px; 
+            border: 1px solid #ddd; 
+            border-radius: 5px; 
+            background-color: #f8f9fa; 
+            color: #555; 
+            cursor: pointer; 
+            font-size: 14px; 
+            flex: 1 1 45%; /* 手機版一行兩個 */
+            transition: 0.2s; 
+        }
+        .option-btn:hover { background-color: #e2e6ea; }
+        
+        /* 選中狀態 */
+        .option-btn.active { 
+            background-color: #007bff; 
+            color: white; 
+            border-color: #0056b3; 
+            box-shadow: 0 2px 4px rgba(0,123,255,0.3);
+        }
+
+        .input-group { margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+        input { padding: 8px; border: 1px solid #ddd; border-radius: 4px; flex: 1; font-size: 16px; }
+
+        /* 講稿區域 */
+        .script-box { 
+            background: white; 
+            padding: 30px 25px; 
+            border-radius: 10px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
+            line-height: 1.9; 
+            font-size: 19px; /* 字體加大 */
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* 變數高亮 */
+        .var-topic { color: #d9534f; font-weight: bold; border-bottom: 1px dashed #d9534f; }
+        .var-speaker { color: #0275d8; font-weight: bold; border-bottom: 1px dashed #0275d8; }
+        .var-bio { color: #555; font-style: italic; background-color: #f9f9f9; padding: 15px; display: block; border-left: 4px solid #0275d8; margin: 10px 0; font-size: 16px; line-height: 1.8; }
+
+        /* 底部 */
+        .footer-note { text-align: center; margin-top: 30px; font-size: 12px; color: #aaa; }
+    </style>
+</head>
+<body>
+
+    <!-- 頂部固定列 -->
+    <div class="top-bar">
+        <h1>LIVING 司儀工具</h1>
+        <button class="toggle-btn" onclick="togglePanel()">⚙️ 設定/隱藏選單</button>
+    </div>
+
+    <!-- 控制面板 -->
+    <div id="controlPanel">
+        <button class="toggle-btn" style="width:100%; margin-bottom:15px; background-color:#28a745;" onclick="togglePanel()">✅ 設定完成，開始讀稿</button>
+
+        <h3>1. 選擇今日會議主題</h3>
+        <div class="btn-group" id="topicGroup">
+            <button class="option-btn" onclick="setTopic('nutrition', this)">營養飲食介紹</button>
+            <button class="option-btn" onclick="setTopic('flower', this)">古典花療簡介</button>
+            <button class="option-btn" onclick="setTopic('career', this)">發展方向</button>
+            <button class="option-btn" onclick="setTopic('recovery', this)">康復之路</button>
+        </div>
+
+        <h3>2. 選擇主講者 (自動帶入資歷)</h3>
+        <div class="btn-group" id="speakerGroup">
+            <button class="option-btn" onclick="setSpeaker('chung', this)">Carol</button>
+            <button class="option-btn" onclick="setSpeaker('wan', this)">Pheobe</button>
+            <button class="option-btn" onclick="setSpeaker('lee', this)">Joanne</button>
+            <button class="option-btn" onclick="setSpeaker('tse', this)">Edmund</button>
+        </div>
+
+        <h3>3. 其他資訊</h3>
+        <div class="input-group">
+            <label>司儀名字：</label>
+            <input type="text" id="mcNameInput" value="_________" placeholder="你的名字" oninput="updateMCName()">
+        </div>
+    </div>
+
+    <!-- 講稿區域 -->
+    <div class="script-box">
+        <p>大家好！歡迎來臨 LIVING 卓越順勢療法有限公司舉辦既 “<span id="displayTitle" class="var-topic">(請選擇主題)</span>＂，</p>
+        
+        <p>我係今日既司儀，我叫 <span id="displayMC" class="var-speaker">_________</span>。</p>
+        
+        <p>係講座開始之前，請將你地既手提電話撥至靜音狀態，以免影響整個講座既進行。過程中如果有須要使用電話，麻煩請到外面的位置接聽。</p>
+        
+        <p>由於知識產權及病人私穩的關係, 今日的講座嚴禁錄影, 錄音及拍攝, 希望各位注意。</p>
+        
+        <p>今日講座的內容會講到 <span id="displayContent" class="var-topic">(內容簡介...)</span></p>
+        
+        <p>我們的主講者係 <span class="displaySpeakerName var-speaker">(主講者)</span>，等我介紹一下她的資歷先：</p>
+        
+        <span id="displayBio" class="var-bio">
+            (請在上方面板選擇主講者，資歷會顯示於此)
+        </span>
+        
+    
+        
+        <p>請以熱烈的掌聲歡迎 <span class="displaySpeakerName var-speaker">(主講者)</span>。</p>
+        
+        <hr style="margin: 30px 0; border: 0; border-top: 1px solid #eee;">
+        
+        <h3>Closing</h3>
+        
+        <p>唔該晒 <span class="displaySpeakerName var-speaker">(主講者)</span> 咁精彩的講解，除左今日的專講, 我們重有其他的專題講座會响逢星期一都會以循環方式進行：時間表張貼在櫃台 前壁報板上，包括有順勢療法的營養觀點、古典花療、康復之路同埋順勢療法的事業發展，而逢星期四的7:30同星期六的3:00都會有順勢療法專講。</p>
+        
+        <p>還有香港順勢療法醫學會已經在 facebook 開左專頁，如果大家想知每月由 {{ 杜家麟教授 }} 親自主講的講座內容，及最新消息，可以 scan Q R Code , 入去之後讚好追蹤</p>
+        
+        <p>如順勢療法已經幫助好多人恢復健康，歡迎各位都來感受順勢療法的好處！</p>
+        
+        <p>如果有問題嘅可以問反帶你嚟的朋友或治療師</p>
+        
+        <p>下次見 BYE BYE!!!</p>
+    </div>
+
+    <div class="footer-note">Living Homeopathy Tool v2.1</div>
+
+<script>
+    // 資料庫：主題
+    const topics = {
+        nutrition: {
+            title: "營養飲食介紹",
+            content: "消化系統是如何運作的，食物配搭錯誤對健康帶來什麼影響，介紹正确飲食法則。"
+        },
+        flower: {
+            title: "古典花療簡介",
+            content: "順勢療法花療的應用！我們常常講《人如其所想所感》，究竟如何在精神層面受沖擊前，先在情緒層面及早治療呢？"
+        },
+        career: {
+            title: "發展方向",
+            content: "其實好多人用順勢療法處理健康幾好，但點樣可以跳入去呢個醫療行業去發展呢? 它的前景係點? 收入如何? 配套係點? 我們就帶你去了解一下!"
+        },
+        recovery: {
+            title: "康復之路",
+            content: "詳細講解：<br>1. 我們為何會生病<br>2. 順勢療法是如何診症的<br>3. 康復過程中的好轉反應（赫林痊癒定律）<br>4. 治療障礙<br>5. 急性及慢性病的個案分享<br>6. 輔助療劑與各個系統的親和力"
+        }
+    };
+
+    // 資料庫：講者及其資歷 (已清理英文並統一格式)
+    const speakers = {
+        chung: {
+            name: "鍾翠麗小姐",
+            bio: "<strong>香港順勢療法法醫學會 – 理事</strong><br>英國營養治療師聯會 (FNTP) – 註冊營養治療師<br>英國健康學院 – 營養專業文憑<br>英國健康學院 – 生理解剖學文憑<br>英國 Plaskett 營養醫學學院 – 專業證書<br>英國順勢療法醫學院 – 家居護理證書"
+        },
+        wan: {
+            name: "溫明森小姐",
+            bio: "<strong>香港順勢療法法醫學會 – 理事</strong><br>英國營養治療師聯會 (FNTP) – 註冊營養治療師<br>英國健康學院 – 古典花療治療師文憑<br>英國健康學院 – 生理解剖學文憑<br>英國健康學院 – 營養專業文憑<br>英國 Plaskett 營養醫學學院 – 專業證書<br>英國順勢療法醫學院 – 動物家居護理證書<br>英國順勢療法醫學院 – 家居護理證書"
+        },
+        lee: {
+            name: "李宛諮小姐",
+            bio: "<strong>香港順勢療法法醫學會 – 理事長</strong><br>澳門順勢療法醫學會 – 司庫<br>英國營養治療師聯會 (FNTP) – 註冊營養治療師<br>英國健康學院 – 營養專業文憑<br>英國健康學院 – 生理解剖學文憑<br>英國 Plaskett 營養醫學學院 – 專業證書<br>美國國際瑜伽治療師協會 – 會員<br>美國瑜伽聯盟 – 註冊瑜伽導師"
+        },
+        tse: {
+            name: "謝寶生先生",
+            bio: "<strong>香港順勢療法法醫學會 – 理事</strong><br>英國營養治療師聯會 (FNTP) – 註冊營養治療師<br>英國健康學院 – 古典花療治療師文憑<br>英國健康學院 – 生理解剖學文憑<br>英國健康學院 – 營養專業文憑<br>英國 Plaskett 營養醫學學院 – 專業證書<br>英國順勢療法醫學院 – 動物家居護理證書<br>英國順勢療法醫學院 – 家居護理證書"
+        }
+    };
+
+    // 功能：切換主題
+    function setTopic(key, btn) {
+        document.querySelectorAll('#topicGroup .option-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('displayTitle').innerText = topics[key].title + " 講座";
+        document.getElementById('displayContent').innerHTML = topics[key].content;
+    }
+
+    // 功能：切換講者
+    function setSpeaker(key, btn) {
+        document.querySelectorAll('#speakerGroup .option-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const data = speakers[key];
+        
+        // 更新所有出現講者名字的地方
+        document.querySelectorAll('.displaySpeakerName').forEach(el => {
+            el.innerText = data.name;
+        });
+
+        // 更新資歷
+        document.getElementById('displayBio').innerHTML = data.bio;
+    }
+
+    // 功能：更新司儀名
+    function updateMCName() {
+        document.getElementById('displayMC').innerText = document.getElementById('mcNameInput').value;
+    }
+
+    // 功能：顯示/隱藏控制面板
+    function togglePanel() {
+        const panel = document.getElementById('controlPanel');
+        panel.classList.toggle('hidden');
+        if (panel.classList.contains('hidden')) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }
+
+    // 初始化
+    window.onload = function() {
+        document.querySelector('#topicGroup button').click();
+        document.querySelector('#speakerGroup button').click();
+    }
+</script>
+
+</body>
+</html>
