@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LIVING 司儀講稿 (多人版)</title>
+    <title>LIVING 司儀講稿 (杜教授專版)</title>
     <style>
         /* 基礎設定 */
         body { 
@@ -12,7 +12,7 @@
             margin: 0; 
             padding: 20px; 
             color: #333;
-            padding-top: 60px; /* 留位給頂部按鈕 */
+            padding-top: 60px; 
         }
 
         /* 頂部浮動按鈕列 */
@@ -42,7 +42,7 @@
             font-weight: bold;
         }
 
-        /* 設定面板 (預設顯示) */
+        /* 設定面板 */
         #controlPanel {
             background: white;
             padding: 20px;
@@ -53,10 +53,8 @@
             display: block; 
         }
         
-        /* 隱藏時的樣式 */
         .hidden { display: none !important; }
 
-        /* 按鈕群組 */
         h3 { margin-top: 0; border-bottom: 2px solid #f0f0f0; padding-bottom: 5px; font-size: 16px; color: #555; }
         .btn-group { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px; }
         
@@ -68,18 +66,20 @@
             color: #555; 
             cursor: pointer; 
             font-size: 14px; 
-            flex: 1 1 45%; /* 手機版一行兩個 */
+            flex: 1 1 30%; /* 按鈕稍微變小以容納更多人 */
             transition: 0.2s; 
         }
         .option-btn:hover { background-color: #e2e6ea; }
-        
-        /* 選中狀態 */
         .option-btn.active { 
             background-color: #007bff; 
             color: white; 
             border-color: #0056b3; 
             box-shadow: 0 2px 4px rgba(0,123,255,0.3);
         }
+        
+        /* 特別將杜教授按鈕標示出來 */
+        .prof-btn { border-color: #28a745; color: #28a745; font-weight: bold; }
+        .prof-btn.active { background-color: #28a745; border-color: #1e7e34; color: white;}
 
         .input-group { margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
         input { padding: 8px; border: 1px solid #ddd; border-radius: 4px; flex: 1; font-size: 16px; }
@@ -91,48 +91,76 @@
             border-radius: 10px; 
             box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
             line-height: 1.9; 
-            font-size: 19px; /* 字體加大 */
+            font-size: 19px; 
             max-width: 800px;
             margin: 0 auto;
         }
 
-        /* 變數高亮 */
         .var-topic { color: #d9534f; font-weight: bold; border-bottom: 1px dashed #d9534f; }
         .var-speaker { color: #0275d8; font-weight: bold; border-bottom: 1px dashed #0275d8; }
-        .var-bio { color: #555; font-style: italic; background-color: #f9f9f9; padding: 15px; display: block; border-left: 4px solid #0275d8; margin: 10px 0; font-size: 16px; line-height: 1.8; }
+        .var-bio { 
+            color: #555; 
+            font-style: italic; 
+            background-color: #f9f9f9; 
+            padding: 15px; 
+            display: block; 
+            border-left: 4px solid #0275d8; 
+            margin: 10px 0; 
+            font-size: 16px; 
+            line-height: 1.8; 
+        }
 
-        /* 底部 */
+        .video-marker {
+            background-color: #e9ecef;
+            color: #495057;
+            text-align: center;
+            font-weight: bold;
+            padding: 10px;
+            margin: 20px 0;
+            border-radius: 5px;
+            border: 2px dashed #ced4da;
+        }
+        
+        /* 杜教授專用的影片標記樣式 */
+        .prof-video-marker {
+            background-color: #d4edda;
+            color: #155724;
+            border-color: #c3e6cb;
+            padding: 20px;
+            font-size: 20px;
+        }
+
         .footer-note { text-align: center; margin-top: 30px; font-size: 12px; color: #aaa; }
     </style>
 </head>
 <body>
 
-    <!-- 頂部固定列 -->
     <div class="top-bar">
         <h1>LIVING 司儀工具</h1>
         <button class="toggle-btn" onclick="togglePanel()">⚙️ 設定/隱藏選單</button>
     </div>
 
-    <!-- 控制面板 -->
     <div id="controlPanel">
         <button class="toggle-btn" style="width:100%; margin-bottom:15px; background-color:#28a745;" onclick="togglePanel()">✅ 設定完成，開始讀稿</button>
 
         <h3>1. 選擇今日會議主題</h3>
         <div class="btn-group" id="topicGroup">
+            <button class="option-btn" onclick="setTopic('special', this)">順勢療法專講</button>
             <button class="option-btn" onclick="setTopic('nutrition', this)">營養飲食介紹</button>
             <button class="option-btn" onclick="setTopic('flower', this)">古典花療簡介</button>
             <button class="option-btn" onclick="setTopic('career', this)">發展方向</button>
             <button class="option-btn" onclick="setTopic('recovery', this)">康復之路</button>
         </div>
 
-        <h3>2. 選擇主講者 (自動帶入資歷)</h3>
+        <h3>2. 選擇主講者</h3>
         <div class="btn-group" id="speakerGroup">
+            <!-- 新增杜教授選項 -->
+            <button class="option-btn prof-btn" onclick="setSpeaker('to', this)">杜家麟院士</button>
             <button class="option-btn" onclick="setSpeaker('chung', this)">Carol</button>
-            <button class="option-btn" onclick="setSpeaker('wan', this)">Pheobe</button>
+            <button class="option-btn" onclick="setSpeaker('wan', this)">Phoebe</button>
             <button class="option-btn" onclick="setSpeaker('lee', this)">Joanne</button>
             <button class="option-btn" onclick="setSpeaker('tse', this)">Edmund</button>
             <button class="option-btn" onclick="setSpeaker('bo', this)">Bo</button>
-
         </div>
 
         <h3>3. 其他資訊</h3>
@@ -142,7 +170,6 @@
         </div>
     </div>
 
-    <!-- 講稿區域 -->
     <div class="script-box">
         <p>大家好！歡迎來臨 LIVING 卓越順勢療法有限公司舉辦既 “<span id="displayTitle" class="var-topic">(請選擇主題)</span>＂，</p>
         
@@ -150,20 +177,63 @@
         
         <p>係講座開始之前，請將你地既手提電話撥至靜音狀態，以免影響整個講座既進行。過程中如果有須要使用電話，麻煩請到外面的位置接聽。</p>
         
-        <p>由於知識產權及病人私穩的關係, 今日的講座嚴禁錄影, 錄音及拍攝, 希望各位注意。</p>
+        <p>由於知識產權及病人私穩的關係，今日的講座嚴禁錄影、錄音及拍攝，希望各位注意。</p>
         
-        <p>今日講座的內容會講到 <span id="displayContent" class="var-topic">(內容簡介...)</span></p>
-        
-        <p>我們的主講者係 <span class="displaySpeakerName var-speaker">(主講者)</span>，等我介紹一下她的資歷先：</p>
-        
-        <span id="displayBio" class="var-bio">
-            (請在上方面板選擇主講者，資歷會顯示於此)
-        </span>
-        
-    
-        
-        <p>請以熱烈的掌聲歡迎 <span class="displaySpeakerName var-speaker">(主講者)</span>。</p>
-        
+        <!-- ======================= -->
+        <!-- 一般標準流程區塊 -->
+        <!-- ======================= -->
+        <div id="standardSection">
+            <p>今日講座的內容會講到 <span id="displayContent" class="var-topic">(內容簡介...)</span></p>
+            
+            <p>我們的主講者係 <span class="displaySpeakerName var-speaker">(主講者)</span>，等我介紹一下她的資歷先：</p>
+            
+            <span class="displayBio var-bio">
+                (資歷載入中)
+            </span>
+            
+            <p>請以熱烈的掌聲歡迎 <span class="displaySpeakerName var-speaker">(主講者)</span>。</p>
+        </div>
+
+        <!-- ======================= -->
+        <!-- 順勢療法專講 (特殊流程) -->
+        <!-- ======================= -->
+        <div id="specialSection" class="hidden">
+            <p>今天的講座會分為兩個部份，第一部份，我們首先會播放一段短片，內容會提及以下五點，包括：</p>
+            <ol style="line-height: 1.6; background: #f0f8ff; padding: 15px 15px 15px 40px; border-radius: 5px;">
+                <li>順勢療法在歐洲各個專科診所的應用情況</li>
+                <li>相似者能治癒</li>
+                <li>對人類及動物的臨床效果</li>
+                <li>療劑的製造方法</li>
+                <li>稀釋及震盪的加能法</li>
+            </ol>
+            <p>請大家細心觀看。</p>
+
+            <div class="video-marker">—————— 影片播放 ——————</div>
+
+            <p>看完剛才的片段，相信各位對順勢療法已經有初步的認識。接下來第二部份的時間，首先會跟大家分享四個使用順勢療法的成功案例，之後會更加深入講解順勢療法的起源、歷史、科學引證、會診方式、診症重點，以及痊癒方向等等，內容非常豐富！順勢療法是一門博大精深的醫學，請大家一會用心地留意每一個細節。</p>
+            
+            <p>等我介紹一下今日主講者先：</p>
+
+            <!-- 這裡開始分歧：一般人顯示資歷，杜教授顯示影片 -->
+            
+            <!-- 分歧A：一般講者 (顯示文字) -->
+            <div id="normalSpecialIntro">
+                <p>我們的主講者係 <span class="displaySpeakerName var-speaker">(主講者)</span>，資歷如下：</p>
+                <span class="displayBio var-bio">
+                    (資歷)
+                </span>
+            </div>
+
+            <!-- 分歧B：杜教授 (顯示影片) -->
+            <div id="profSpecialIntro" class="hidden">
+                <div class="video-marker prof-video-marker">—————— 影片播放 (介紹杜院士) ——————</div>
+            </div>
+
+            <p>請以熱烈的掌聲歡迎 <span class="displaySpeakerName var-speaker">(主講者)</span>。</p>
+            
+            <div class="video-marker">—————— 講座開始 ——————</div>
+        </div>
+
         <hr style="margin: 30px 0; border: 0; border-top: 1px solid #eee;">
         
         <h3>Closing</h3>
@@ -179,83 +249,100 @@
         <p>下次見 BYE BYE!!!</p>
     </div>
 
-    <div class="footer-note">Living Homeopathy Tool v2.1</div>
+    <div class="footer-note">Living Homeopathy Tool v2.3</div>
 
 <script>
-    // 資料庫：主題
+    // 狀態追蹤
+    let currentTopic = '';
+    let currentSpeaker = '';
+
     const topics = {
-        nutrition: {
-            title: "營養飲食介紹",
-            content: "消化系統是如何運作的，食物配搭錯誤對健康帶來什麼影響，介紹正确飲食法則。"
-        },
-        flower: {
-            title: "古典花療簡介",
-            content: "順勢療法花療的應用！我們常常講《人如其所想所感》，究竟如何在精神層面受沖擊前，先在情緒層面及早治療呢？"
-        },
-        career: {
-            title: "發展方向",
-            content: "其實好多人用順勢療法處理健康幾好，但點樣可以跳入去呢個醫療行業去發展呢? 它的前景係點? 收入如何? 配套係點? 我們就帶你去了解一下!"
-        },
-        recovery: {
-            title: "康復之路",
-            content: "詳細講解：<br>1. 我們為何會生病<br>2. 順勢療法是如何診症的<br>3. 康復過程中的好轉反應（赫林痊癒定律）<br>4. 治療障礙<br>5. 急性及慢性病的個案分享<br>6. 輔助療劑與各個系統的親和力"
-        }
+        nutrition: { title: "營養飲食介紹", content: "消化系統是如何運作的，食物配搭錯誤對健康帶來什麼影響，介紹正确飲食法則。" },
+        flower: { title: "古典花療簡介", content: "順勢療法花療的應用！我們常常講《人如其所想所感》，究竟如何在精神層面受沖擊前，先在情緒層面及早治療呢？" },
+        career: { title: "發展方向", content: "其實好多人用順勢療法處理健康幾好，但點樣可以跳入去呢個醫療行業去發展呢? 它的前景係點? 收入如何? 配套係點? 我們就帶你去了解一下!" },
+        recovery: { title: "康復之路", content: "詳細講解：<br>1. 我們為何會生病<br>2. 順勢療法是如何診症的<br>3. 康復過程中的好轉反應（赫林痊癒定律）<br>4. 治療障礙<br>5. 急性及慢性病的個案分享<br>6. 輔助療劑與各個系統的親和力" }
     };
 
-    // 資料庫：講者及其資歷 (已清理英文並統一格式)
     const speakers = {
-        chung: {
-            name: "鍾翠麗小姐",
-            bio: "<strong>香港順勢療法法醫學會 – 理事</strong><br>英國營養治療師聯會 (FNTP) – 註冊營養治療師<br>英國健康學院 – 營養專業文憑<br>英國健康學院 – 生理解剖學文憑<br>英國 Plaskett 營養醫學學院 – 專業證書<br>英國順勢療法醫學院 – 家居護理證書"
-        },
-        wan: {
-            name: "溫明森小姐",
-            bio: "<strong>香港順勢療法法醫學會 – 理事</strong><br>英國營養治療師聯會 (FNTP) – 註冊營養治療師<br>英國健康學院 – 古典花療治療師文憑<br>英國健康學院 – 生理解剖學文憑<br>英國健康學院 – 營養專業文憑<br>英國 Plaskett 營養醫學學院 – 專業證書<br>英國順勢療法醫學院 – 動物家居護理證書<br>英國順勢療法醫學院 – 家居護理證書"
-        },
-        lee: {
-            name: "李宛諮小姐",
-            bio: "<strong>香港順勢療法法醫學會 – 理事長</strong><br>澳門順勢療法醫學會 – 司庫<br>英國營養治療師聯會 (FNTP) – 註冊營養治療師<br>英國健康學院 – 營養專業文憑<br>英國健康學院 – 生理解剖學文憑<br>英國 Plaskett 營養醫學學院 – 專業證書<br>美國國際瑜伽治療師協會 – 會員<br>美國瑜伽聯盟 – 註冊瑜伽導師"
-        },
-        tse: {
-            name: "謝寶生先生",
-            bio: "<strong>香港順勢療法法醫學會 – 理事</strong><br>英國營養治療師聯會 (FNTP) – 註冊營養治療師<br>英國健康學院 – 古典花療治療師文憑<br>英國健康學院 – 生理解剖學文憑<br>英國健康學院 – 營養專業文憑<br>英國 Plaskett 營養醫學學院 – 專業證書<br>英國順勢療法醫學院 – 動物家居護理證書<br>英國順勢療法醫學院 – 家居護理證書"
-        },
-        bo: {
-            name: "周卓霖小姐",
-            bio: "<strong>香港順勢療法法醫學會 – 監事長</strong><br>英國營養治療師聯會 (FNTP) – 註冊營養治療師<br>英國健康學院 – 古典花療治療師文憑<br>英國健康學院 – 生理解剖學文憑<br>英國健康學院 – 營養專業文憑<br>英國 Plaskett 營養醫學學院 – 專業證書<br>英國順勢療法醫學院 – 動物家居護理證書"
-        }
+        to: { name: "杜家麟院士", bio: "<strong>香港順勢療法醫學會會長</strong><br>(杜教授介紹影片)" },
+        chung: { name: "鍾翠麗小姐", bio: "<strong>香港順勢療法法醫學會 – 理事</strong><br>英國營養治療師聯會 (FNTP) – 註冊營養治療師<br>英國健康學院 – 營養專業文憑<br>英國健康學院 – 生理解剖學文憑<br>英國 Plaskett 營養醫學學院 – 專業證書<br>英國順勢療法醫學院 – 家居護理證書" },
+        wan: { name: "溫明森小姐", bio: "<strong>香港順勢療法法醫學會 – 理事</strong><br>英國營養治療師聯會 (FNTP) – 註冊營養治療師<br>英國健康學院 – 古典花療治療師文憑<br>英國健康學院 – 生理解剖學文憑<br>英國健康學院 – 營養專業文憑<br>英國 Plaskett 營養醫學學院 – 專業證書<br>英國順勢療法醫學院 – 動物家居護理證書<br>英國順勢療法醫學院 – 家居護理證書" },
+        lee: { name: "李宛諮小姐", bio: "<strong>香港順勢療法法醫學會 – 理事長</strong><br>澳門順勢療法醫學會 – 司庫<br>英國營養治療師聯會 (FNTP) – 註冊營養治療師<br>英國健康學院 – 營養專業文憑<br>英國健康學院 – 生理解剖學文憑<br>英國 Plaskett 營養醫學學院 – 專業證書<br>美國國際瑜伽治療師協會 – 會員<br>美國瑜伽聯盟 – 註冊瑜伽導師" },
+        tse: { name: "謝寶生先生", bio: "<strong>香港順勢療法法醫學會 – 理事</strong><br>英國營養治療師聯會 (FNTP) – 註冊營養治療師<br>英國健康學院 – 古典花療治療師文憑<br>英國健康學院 – 生理解剖學文憑<br>英國健康學院 – 營養專業文憑<br>英國 Plaskett 營養醫學學院 – 專業證書<br>英國順勢療法醫學院 – 動物家居護理證書<br>英國順勢療法醫學院 – 家居護理證書" },
+        bo: { name: "周卓霖小姐", bio: "<strong>香港順勢療法法醫學會 – 監事長</strong><br>英國營養治療師聯會 (FNTP) – 註冊營養治療師<br>英國健康學院 – 古典花療治療師文憑<br>英國健康學院 – 生理解剖學文憑<br>英國健康學院 – 營養專業文憑<br>英國 Plaskett 營養醫學學院 – 專業證書<br>英國順勢療法醫學院 – 動物家居護理證書" }
     };
 
-    // 功能：切換主題
     function setTopic(key, btn) {
+        currentTopic = key;
+        
         document.querySelectorAll('#topicGroup .option-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        document.getElementById('displayTitle').innerText = topics[key].title + " 講座";
-        document.getElementById('displayContent').innerHTML = topics[key].content;
+
+        // 更新介面
+        updateLayout();
     }
 
-    // 功能：切換講者
     function setSpeaker(key, btn) {
+        currentSpeaker = key;
+
         document.querySelectorAll('#speakerGroup .option-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
 
         const data = speakers[key];
         
-        // 更新所有出現講者名字的地方
-        document.querySelectorAll('.displaySpeakerName').forEach(el => {
-            el.innerText = data.name;
-        });
+        // 更新所有名字
+        document.querySelectorAll('.displaySpeakerName').forEach(el => el.innerText = data.name);
+        // 更新所有資歷
+        document.querySelectorAll('.displayBio').forEach(el => el.innerHTML = data.bio);
 
-        // 更新資歷
-        document.getElementById('displayBio').innerHTML = data.bio;
+        // 更新介面
+        updateLayout();
     }
 
-    // 功能：更新司儀名
+    // 核心邏輯：決定顯示哪個區塊
+    function updateLayout() {
+        const standardSection = document.getElementById('standardSection');
+        const specialSection = document.getElementById('specialSection');
+        const displayTitle = document.getElementById('displayTitle');
+        const displayContent = document.getElementById('displayContent');
+        
+        // 特殊處理：專講區塊內部的 杜教授 vs 一般人
+        const normalSpecialIntro = document.getElementById('normalSpecialIntro');
+        const profSpecialIntro = document.getElementById('profSpecialIntro');
+
+        if (currentTopic === 'special') {
+            // 進入專講模式
+            standardSection.classList.add('hidden');
+            specialSection.classList.remove('hidden');
+            displayTitle.innerText = "順勢療法專講";
+
+            // 判斷是否為杜教授
+            if (currentSpeaker === 'to') {
+                // 是杜教授：隱藏文字資歷，顯示影片
+                normalSpecialIntro.classList.add('hidden');
+                profSpecialIntro.classList.remove('hidden');
+            } else {
+                // 是一般人：顯示文字資歷，隱藏影片
+                normalSpecialIntro.classList.remove('hidden');
+                profSpecialIntro.classList.add('hidden');
+            }
+
+        } else {
+            // 進入一般模式
+            standardSection.classList.remove('hidden');
+            specialSection.classList.add('hidden');
+            
+            if (topics[currentTopic]) {
+                displayTitle.innerText = topics[currentTopic].title + " 講座";
+                displayContent.innerHTML = topics[currentTopic].content;
+            }
+        }
+    }
+
     function updateMCName() {
         document.getElementById('displayMC').innerText = document.getElementById('mcNameInput').value;
     }
 
-    // 功能：顯示/隱藏控制面板
     function togglePanel() {
         const panel = document.getElementById('controlPanel');
         panel.classList.toggle('hidden');
@@ -264,8 +351,8 @@
         }
     }
 
-    // 初始化
     window.onload = function() {
+        // 預設點擊：專講 + 杜教授
         document.querySelector('#topicGroup button').click();
         document.querySelector('#speakerGroup button').click();
     }
